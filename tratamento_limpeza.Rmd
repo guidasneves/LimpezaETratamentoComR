@@ -1,0 +1,85 @@
+Tratar dados 'tempo.csv'
+```{r}
+# Importando os Dados
+# Já transformando as strings vazias para valor NA
+# String como fatores
+dados = read.csv('tempo.csv', sep = ';', na.strings = '', stringsAsFactors = T)
+head(dados)
+summary(dados)
+```
+Colunas Categoricas
+```{r}
+# Aparencia
+summary(dados$Aparencia)
+contagem = table(dados$Aparencia)
+contagem
+barplot(contagem, main = 'Aparencias', xlab = 'Aparencias')
+# Jogar
+summary(dados$Jogar)
+contagem = table(dados$Jogar)
+contagem
+barplot(contagem, main = 'Jogar', xlab = 'Jogar')
+# Vento
+contagem = table(dados$Vento)
+contagem
+barplot(contagem, main = 'Ventos', xlab = 'Ventos')
+```
+Colunas Numericas
+```{r}
+# Temperatura
+summary(dados$Temperatura)
+boxplot(dados$Temperatura, outline = F)
+hist(dados$Temperatura)
+# Umidade
+summary(dados$Umidade)
+boxplot(dados$Umidade)
+hist(dados$Umidade)
+```
+Valores NAs
+```{r}
+# Retornará as linhasc om valores NA's
+dados[!complete.cases(dados),]
+```
+Tratar Valores NAs
+```{r}
+# Umidade, numérico
+# Calculando a Mediana da Coluna Umidade
+median(dados$Umidade, na.rm = T)
+# Substituindo os valores NA's da Coluna Umidade pela própria Mediana
+dados[is.na(dados$Umidade),]$Umidade = median(dados$Umidade, na.rm = T)
+# Nenhum valor NA
+dados[!complete.cases(dados$Umidade),]
+# Vento, categórico
+unique(dados$Vento)
+summary(dados$Vento)
+# Substituindo os valores NA's da Coluna Vento pelo valor 'FALSO'
+dados[is.na(dados$Vento),]$Vento = 'FALSO'
+```
+Tratar Categoricas
+```{r}
+# Aparencia
+summary(dados$Aparencia)
+# Substituindo os Outliers de 'menos' na COluna Aparencia para 'sol'
+dados[dados$Aparencia == 'menos',]$Aparencia = 'sol'
+# Transformando a coluna em um fator
+dados$Aparencia = factor(dados$Aparencia)
+```
+Tratar Numericas
+```{r}
+# Temperatura
+# Calculando a Mediana
+median(dados$Temperatura)
+# Visualizando os valores na Coluna Temperatura < -139 e > 130
+dados[dados$Temperatura < -130 | dados$Temperatura > 130,]$Temperatura
+# VIsualizando os valores NA
+dados[is.na(dados$Temperatura),]
+# Substituindo os valores < -130 e > 130 na Coluna Temperatura pela sua própria Mediana
+dados[dados$Temperatura < -130 | dados$Temperatura > 130,]$Temperatura = median(dados$Temperatura)
+summary(dados$Temperatura)
+# Umidade
+median(dados$Umidade)
+dados[dados$Umidade < 0 | dados$Umidade > 100,]$Umidade
+dados[is.na(dados$Umidade),]
+dados[dados$Umidade < 0 | dados$Umidade > 100,]$Umidade = median(dados$Umidade)
+summary(dados$Umidade)
+```
